@@ -9,12 +9,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link'
 import "../mycss.css"
 import PocketBase from 'pocketbase'
-import { useState, useEffect} from 'react';
+import { useState, useEffect, useLayoutEffect, useRef} from 'react';
 import DeleteCookieAction from '../serveractions/DeleteCookieAction';
+import GetValues from '../serveractions/NavBarAction';
+
 
 export default function NavBar() {
     const pb = new PocketBase('http://127.0.0.1:8090');
-    const [IsLogin, setIsLogin] = useState(false);
+    const [IsLogin, setIsLogin] = useState();
     
     useEffect(()=>{
         if(pb.authStore.isValid){
@@ -24,15 +26,15 @@ export default function NavBar() {
             setIsLogin(false)
         }
     })
-
+    
     const Logout = async() =>{
         pb.authStore.clear()
         DeleteCookieAction()
-
     }
+    
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1 }} >
             <AppBar position="static">
                 <Toolbar>
                     <IconButton
@@ -47,7 +49,7 @@ export default function NavBar() {
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         News
                     </Typography>
-                    {IsLogin === true ?
+                    {IsLogin === true?
                         (
                         <Box sx = {{ display: "flex", gap: "10px" }}>
                             <Link className='nav_link' href="#">Profile</Link>

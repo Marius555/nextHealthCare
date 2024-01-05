@@ -2,12 +2,15 @@
 import PocketBase from 'pocketbase';
 import { cookies } from 'next/headers'
 import dayjs from 'dayjs';
+import * as yup from "yup"
+import { schema } from 'yup';
+
 const pb = new PocketBase('http://127.0.0.1:8090');
+
 
 const StepOneDoctorAction = async(values) => {
     const pb_cookie = cookies().get("pb_auth")
     pb.authStore.loadFromCookie(`${pb_cookie.name}=${pb_cookie.value}`)
-
     if(pb.authStore.isValid){
         try {
             const data = {
@@ -17,7 +20,7 @@ const StepOneDoctorAction = async(values) => {
                 "PhoneNumber": values.PhoneNumber,
                 "LicenseNumber": values.LicenseNumber,
                 "Nationality": values.Nationality,
-                "BirthDay": dayjs(values.BirthDay).format("YYYY-MM-DD"),
+                "BirthDay": dayjs(values.DateOfBirth).format("YYYY-MM-DD"),
                 "Gender": values.Gender
             };
             await pb.collection('DoctorDetails').create(data);

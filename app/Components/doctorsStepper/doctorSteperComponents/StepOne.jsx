@@ -37,7 +37,7 @@ const StepOne = ({ ActiveStep, setActiveStep }) => {
     const incrementStep = (values) => {
         // const dateString = dayjs(values.DateOfBirth).format('YYYY-MM-DD');
         StepOneDoctorAction(values)
-        // setActiveStep((step) => step + 1)
+        setActiveStep((step) => step + 1)
     }
 
     return (
@@ -115,9 +115,12 @@ const StepOne = ({ ActiveStep, setActiveStep }) => {
 
                                         </Select>
                                     </FormControl>
+                                    <FormHelperText error variant='filled'>{errors.Nationality?.message}</FormHelperText>
                                 </>
                             )}
+                            
                         />
+                        
                     </Grid>
 
                     <Grid xs={12}>
@@ -129,17 +132,19 @@ const StepOne = ({ ActiveStep, setActiveStep }) => {
                                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='lt' >
                                     <DatePicker label="Gimimo Data" onChange={onChange}
                                         onBlur={onBlur} sx={{ width: "100%" }} disableFuture required
+                                        slotProps={{ textField: { size: 'small', error: Boolean(errors.DateOfBirth) } }}
+                                        openTo="year"
+                                        views={['year', 'month', 'day']}
+
                                     />
                                 </LocalizationProvider>
 
                             )}
-                            error={Boolean(errors.DateOfBirth)} helperText={errors.DateOfBirth?.message}
                         />
+                        <FormHelperText error variant='filled'>{errors.DateOfBirth?.message}</FormHelperText>
 
                     </Grid>
                     <Grid xs={12}>
-
-
                         <Controller
                             control={control}
                             name='Gender'
@@ -163,9 +168,6 @@ const StepOne = ({ ActiveStep, setActiveStep }) => {
 
                             )}
                         />
-
-
-
                     </Grid>
                     <Grid xs={12}>
                         <Button type='submit' variant='contained' fullWidth>Next</Button>

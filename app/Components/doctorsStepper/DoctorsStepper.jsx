@@ -9,6 +9,8 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import StepOne from './doctorSteperComponents/StepOne';
 import StepTwo from './doctorSteperComponents/StepTwo';
+import StepTree from './doctorSteperComponents/StepTree';
+
 
 const StepLabels = [
     { label: "Details" },
@@ -46,6 +48,7 @@ const DoctorsStepper = () => {
                     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "25rem" }}>
                         {ActiveStep === 0 && <StepOne ActiveStep={ActiveStep} setActiveStep={setActiveStep} />}
                         {ActiveStep === 1 && <StepTwo ActiveStep={ActiveStep} setActiveStep={setActiveStep} />}
+                        {ActiveStep === 2 && <StepTree ActiveStep={ActiveStep} setActiveStep={setActiveStep} />}
                     </Box>
                 </Box>
             </Box>

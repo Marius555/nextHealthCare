@@ -11,6 +11,17 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import DoctorStepTwoResolver from '../../../resolver/doctorProfilerResolvers/stepTwoResolver';
+import FormHelperText from '@mui/material/FormHelperText';
+import dayjs from 'dayjs';
+import StepTwoDoctorAction from '../../../serveractions/DoctorProfilerAction/StepTwoDoctorAction';
+
+
+
+import "dayjs/locale/lt"
 
 const universitys = [
     { name: "Generolo Jono Žemaičio Lietuvos karo akademija" },
@@ -62,7 +73,7 @@ const Specializations = [
     { name: "Bendrosios praktikos slaugytojas" },
     { name: "Burnos chirurgas" },
     { name: "Burnos higienistas" },
-    { name: "Endobiogenika" },
+    { name: "Endobiogenikas" },
     { name: "Endodontologas" },
     { name: "Ergoterapeutas" },
     { name: "Fizinės medicinos ir reabilitacijos gydytojas" },
@@ -124,7 +135,6 @@ const Specializations = [
     { name: "Periodontologas" },
     { name: "Plastinės ir rekonstrukcinės chirurgijos gydytojas" },
     { name: "Priminimai" },
-    { name: "Procedūriniai kab. (1 aukštas)" },
     { name: "Radiologas (RO)" },
     { name: "Radiologijos technologas" },
     { name: "Šeimos gydytojas" },
@@ -134,6 +144,17 @@ const Specializations = [
     { name: "Vaikų ortopedas traumatologas" },
     { name: "Vidaus ligų gydytojas" },
 ]
+const DegreeLevels = [
+    {name: "Vidurinis"},
+    {name: "Profesinis"},
+    {name: "Aukštesnysis"},
+    {name: "Aukštasis"},
+    {name: "Magistras"},
+    {name: "Daktaras"},
+    {name: "Kita"},
+]
+
+
 const StepTwo = ({ ActiveStep, setActiveStep }) => {
 
 
@@ -143,17 +164,16 @@ const StepTwo = ({ ActiveStep, setActiveStep }) => {
         control,
 
         formState: { errors },
-    } = useForm({ resolver: yupResolver(DoctorStepOneResolver) })
+    } = useForm({ resolver: yupResolver(DoctorStepTwoResolver) })
 
     const incrementStep = (values) => {
-        // const dateString = dayjs(values.DateOfBirth).format('YYYY-MM-DD');
-        console.log(values)
-        // setActiveStep((step) => step + 1)
+        StepTwoDoctorAction(values)
+        setActiveStep((step) => step + 1)
     }
 
     return (
         <>
-            <Box component="form" sx={{marginBottom: "10px"}} noValidate onSubmit={handleSubmit(incrementStep)}>
+            <Box component="form" sx={{ marginBottom: "10px" }} noValidate onSubmit={handleSubmit(incrementStep)}>
                 <Typography marginTop={3} marginBottom={2} variant='h6'>Education</Typography>
                 <Grid container spacing={2}>
 
@@ -165,18 +185,18 @@ const StepTwo = ({ ActiveStep, setActiveStep }) => {
                             defaultValue=""
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <FormControl sx={{ width: "100%" }}>
-                                        <InputLabel id="demo-select-small-label">Universitetas/Kolegija</InputLabel>
+                                    <FormControl sx={{ width: "100%" }} size='small'>
+                                        <InputLabel id="demo-select-small-label">Aukštoji Mokykla</InputLabel>
                                         <Select
+                                            error={Boolean(errors.HighSchool)}
+                                            size='small'
                                             labelId="demo-select-small-label"
                                             value={value}
                                             onBlur={onBlur}
-                                            label="Universitetas/Kolegija"
+                                            label="Aukštoji Mokykla"
                                             onChange={onChange}
                                         >
-                                            <MenuItem value="">
-                                                <em>None</em>
-                                            </MenuItem>
+
                                             {universitys.map((item, index) => {
                                                 return (
                                                     <MenuItem key={index} value={item.name}>{item.name}</MenuItem>
@@ -185,11 +205,13 @@ const StepTwo = ({ ActiveStep, setActiveStep }) => {
 
                                         </Select>
                                     </FormControl>
+                                    <FormHelperText error variant='filled'>{errors.HighSchool?.message}</FormHelperText>
                                 </>
                             )}
+
                         />
                     </Grid>
-                    <Grid xs={12}>
+                    <Grid xs={12} >
                         <Controller
                             control={control}
                             name='Specialization'
@@ -197,9 +219,11 @@ const StepTwo = ({ ActiveStep, setActiveStep }) => {
                             defaultValue=""
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <FormControl sx={{ minWidth: "25rem" }}>
+                                    <FormControl sx={{ width: "100%" }} size='small'>
                                         <InputLabel id="demo-select-small-label">Įgyta Specialybė</InputLabel>
                                         <Select
+                                            error={Boolean(errors.Specialization)}
+                                            size='small'
                                             sx={{ width: "100%" }}
                                             labelId="demo-select-small-label"
                                             value={value}
@@ -207,9 +231,7 @@ const StepTwo = ({ ActiveStep, setActiveStep }) => {
                                             label="Įgyta Specialybė"
                                             onChange={onChange}
                                         >
-                                            <MenuItem value="">
-                                                <em>None</em>
-                                            </MenuItem>
+
                                             {Specializations.map((item, index) => {
                                                 return (
                                                     <MenuItem key={index} value={item.name}>{item.name}</MenuItem>
@@ -218,10 +240,90 @@ const StepTwo = ({ ActiveStep, setActiveStep }) => {
 
                                         </Select>
                                     </FormControl>
+                                    <FormHelperText error variant='filled'>{errors.Specialization?.message}</FormHelperText>
+                                </>
+                            )}
+
+                        />
+                    </Grid>
+                    <Grid xs={12} sm={6}>
+                        <Controller
+                            control={control}
+                            name='StudyBeginningDate'
+                            required
+                            render={({ field: { onChange, onBlur } }) => (
+                                <>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='lt' >
+                                        <DatePicker label="Studiju Pradžia" onChange={onChange}
+                                            onBlur={onBlur} sx={{ width: "100%" }} disableFuture required
+                                            slotProps={{ textField: { size: 'small', error: Boolean(errors.StudyBeginningDate) } }}
+                                            openTo="year"
+                                            views={['year', 'month']}
+                                        />
+                                    </LocalizationProvider>
+
                                 </>
                             )}
                         />
+                        <FormHelperText error variant='filled'>{errors.StudyBeginningDate?.message}</FormHelperText>
                     </Grid>
+                    <Grid xs={12} sm={6}>
+                        <Controller
+                            control={control}
+                            name='DateOfGraduation'
+                            required
+                            render={({ field: { onChange, onBlur } }) => (
+                                <>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='lt' >
+                                        <DatePicker label="Studiju Pabaiga" onChange={onChange}
+                                            onBlur={onBlur} sx={{ width: "100%" }} disableFuture required
+                                            slotProps={{ textField: { size: 'small', error: Boolean(errors.DateOfGraduation) } }}
+                                            openTo="year"
+                                            views={['year', 'month']}
+                                        />
+                                    </LocalizationProvider>
+
+                                </>
+                            )}
+                        />
+                        <FormHelperText error variant='filled'>{errors.DateOfGraduation?.message}</FormHelperText>
+                    </Grid>
+                    <Grid xs={12} >
+                        <Controller
+                            control={control}
+                            name='DegreeLevel'
+                            required
+                            defaultValue=""
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <>
+                                    <FormControl sx={{ width: "100%" }} size='small'>
+                                        <InputLabel id="demo-select-small-label">Įgyta Specialybė</InputLabel>
+                                        <Select
+                                            error={Boolean(errors.DateOfGraduation)}
+                                            size='small'
+                                            sx={{ width: "100%" }}
+                                            labelId="demo-select-small-label"
+                                            value={value}
+                                            onBlur={onBlur}
+                                            label="Įgyta Specialybė"
+                                            onChange={onChange}
+                                        >
+
+                                            {DegreeLevels.map((item, index) => {
+                                                return (
+                                                    <MenuItem key={index} value={item.name}>{item.name}</MenuItem>
+                                                )
+                                            })}
+
+                                        </Select>
+                                    </FormControl>
+                                    <FormHelperText error variant='filled'>{errors.DegreeLevel?.message}</FormHelperText>
+                                </>
+                            )}
+
+                        />
+                    </Grid>
+
 
                     <Grid xs={12}>
                         <Button type='submit' variant='contained' fullWidth>Next</Button>

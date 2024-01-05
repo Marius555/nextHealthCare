@@ -2,28 +2,48 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import PocketBase from 'pocketbase';
-
-export async function middleware(request) {
-    const pb = new PocketBase('http://127.0.0.1:8090');
-
-    if(pb.authStore.isValid){
-        const pb_cookie = cookies().get("pb_auth")
-        pb.authStore.loadFromCookie(`${pb_cookie.name}=${pb_cookie.value}`)
-    }
-    else{
-        return NextResponse.redirect(new URL('/', request.url))
-    }
+const pb = new PocketBase('http://127.0.0.1:8090');
 
 
-    try {
+
+export function middleware(request) {
+    
+
+    if (request.nextUrl.pathname.startsWith('/user/')) {
+        try {
+            const pb_cookie = cookies().get("pb_auth")
+            pb.authStore.loadFromCookie(`${pb_cookie.name}=${pb_cookie.value}`)
+            if(pb.authStore.isValid){
+                return 
+            }
+        } catch (error) {
+            return NextResponse.redirect(new URL('/', request.url))
+        }
         
-    } catch (error) {
-        
     }
+    if(request.nextUrl.pathname.startsWith('/registration/')){
+        try {
+            const pb_cookie = cookies().get("pb_auth")
+            pb.authStore.loadFromCookie(`${pb_cookie.name}=${pb_cookie.value}`)
+            if(pb.authStore.isValid){
+                return NextResponse.redirect(new URL('/', request.url)) 
+            }
+        } catch (error) {
+            return
+        }
+    }
+    if(request.nextUrl.pathname.startsWith('/login_user')){
+        try {
+            const pb_cookie = cookies().get("pb_auth")
+            pb.authStore.loadFromCookie(`${pb_cookie.name}=${pb_cookie.value}`)
+            if(pb.authStore.isValid){
+                return NextResponse.redirect(new URL('/', request.url)) 
+            }
+            console.log(pb.authStore.isValid)
+        } catch (error) {
+            return
+        }
+    }
+    
 
-}
-
-// See "Matching Paths" below to learn more
-export const config = {
-    matcher: '/user/:path*',
 }

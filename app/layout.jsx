@@ -1,5 +1,8 @@
+
 import ThemeRegistry from './ThemeRegistry'
 import NavBar from './Components/NavBar';
+
+
 
 export const metadata = {
   title: 'Create Next App',
@@ -8,6 +11,7 @@ export const metadata = {
 
 export default function RootLayout(props) {
   const { children } = props;
+  
   return (
     <html lang="en">
       <body>

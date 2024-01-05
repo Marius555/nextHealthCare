@@ -16,7 +16,12 @@ import LogInResolverSchema from '../resolver/UserLogInResolver';
 import LogInAction from '../serveractions/LogInAction';
 import getCookie from '../Components/GetCookie';
 import PocketBase from 'pocketbase';
+import { useRouter } from 'next/navigation';
+
+
 const pb = new PocketBase('http://127.0.0.1:8090');
+
+
 
 function Copyright(props) {
     return (
@@ -36,6 +41,7 @@ function Copyright(props) {
 
 export default function SignInSide() {
     const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(LogInResolverSchema) })
+    const router = useRouter()
     const Submit = async (values) => {
         await LogInAction(values)
         
@@ -43,14 +49,20 @@ export default function SignInSide() {
             const trying = getCookie('pb_auth')
             const decode = JSON.parse(trying)
             pb.authStore.save(decode.token, decode.model)
+            if(await pb.authStore.model.VartotojoTipas === "Doctor" && await pb.authStore.model.FirstLogin === false){
+                router.push("/user/doctor/profiler")
+                const record = await pb.collection('User').update(decode.model.id, {FirstLogin: true});
+                console.log(record)
+
+            }
         }
         catch {
             return 
         }
     }
-
     return (
         <>
+          
             <Grid container component="main" sx={{ height: 'calc(100vh - 64px)' }}>
                 <CssBaseline />
                 <Grid
