@@ -1,6 +1,6 @@
 "use server"
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import PocketBase from 'pocketbase';
 const pb = new PocketBase('http://127.0.0.1:8090');
 
@@ -14,8 +14,9 @@ export function middleware(request) {
             const pb_cookie = cookies().get("pb_auth")
             pb.authStore.loadFromCookie(`${pb_cookie.name}=${pb_cookie.value}`)
             if(pb.authStore.isValid){
-                return 
+                return console.log("valid connection", true)
             }
+
         } catch (error) {
             return NextResponse.redirect(new URL('/', request.url))
         }

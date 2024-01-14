@@ -53,7 +53,6 @@ export default function SignInSide() {
                 router.push("/user/doctor/profiler")
                 const record = await pb.collection('User').update(decode.model.id, {FirstLogin: true});
                 console.log(record)
-
             }
         }
         catch {

@@ -1,72 +1,67 @@
-"use client"
-import * as React from 'react';
+"use server"
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import Link from 'next/link'
 import "../mycss.css"
 import PocketBase from 'pocketbase'
-import { useState, useEffect, useLayoutEffect, useRef} from 'react';
-import DeleteCookieAction from '../serveractions/DeleteCookieAction';
-import GetValues from '../serveractions/NavBarAction';
+import NavigationChip from './navbar/NavigationChip';
+import Stack from '@mui/material/Stack';
+import LoginIcon from '@mui/icons-material/Login';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { cookies } from 'next/headers';
+import NavBarOnScroll from './navbar/NavBarOnScroll';
+import NavBarDrawer from './navbar/NavBarDrawer';
+import MenuIcon from '@mui/icons-material/Menu';
 
+const pb = new PocketBase('http://127.0.0.1:8090');
 
-export default function NavBar() {
-    const pb = new PocketBase('http://127.0.0.1:8090');
-    const [IsLogin, setIsLogin] = useState();
+export default async function NavBar() {
     
-    useEffect(()=>{
-        if(pb.authStore.isValid){
-            setIsLogin(true)
-        }
-        else{
-            setIsLogin(false)
-        }
-    })
-    
-    const Logout = async() =>{
-        pb.authStore.clear()
-        DeleteCookieAction()
+    let isTrue = null
+    try {
+        const pb_cookie = cookies().get("pb_auth")
+        pb.authStore.loadFromCookie(`${pb_cookie.name}=${pb_cookie.value}`)
+        isTrue = pb.authStore.isValid
+  
+    } catch (error) {
+        isTrue = pb.authStore.isValid
     }
-    
+
+
 
     return (
         <Box sx={{ flexGrow: 1 }} >
+            {/* <NavBarOnScroll /> */}
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                    <NavBarDrawer />
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         News
                     </Typography>
-                    {IsLogin === true?
+                    {isTrue === true ?
                         (
-                        <Box sx = {{ display: "flex", gap: "10px" }}>
-                            <Link className='nav_link' href="#">Profile</Link>
-                            <Link onClick={Logout} className='nav_link' href="/">Logout</Link>
-                        </Box>
-                        ):
+                            <Stack direction="row" spacing={1}>
+                                <NavigationChip title="Profile" iconType="profile" redirectTo="#" 
+                                iconAvatar={<AccountBoxIcon color='inherit' fontSize='small'/>}/>
+                                <NavigationChip title="logout" iconType="logout" redirectTo="/" 
+                                iconAvatar={<LogoutIcon color='inherit' fontSize='small'/>}/>
+                            </Stack>
+                        ) :
                         (
-                        <Box sx = {{ display: "flex", gap: "10px" }}>
-                            <Link className='nav_link' href="/registration/register_transition">Register</Link>
-                            <Link className='nav_link' href="/login_user">Login</Link>
-                        </Box>
+                            <Stack direction="row" spacing={1}>
+                                <NavigationChip title="Register" iconType="register" redirectTo="/registration/register_transition"
+                                 iconAvatar={<HowToRegIcon color='inherit' fontSize='small'/>}/>
+                                <NavigationChip title="Login" iconType="login" redirectTo="/login_user"
+                                 iconAvatar={<LoginIcon color='inherit' fontSize='small'/>}/>
+                            </Stack>
                         )
-                    
                     }
-
-            </Toolbar>
-        </AppBar>
+                </Toolbar>
+            </AppBar>
         </Box >
     );
 }

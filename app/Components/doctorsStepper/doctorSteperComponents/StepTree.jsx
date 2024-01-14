@@ -39,7 +39,7 @@ const StepTree = ({ ActiveStep, setActiveStep }) => {
     const incrementStep = (values) => {
         console.log(values)
         StepTreeDoctorAction(values)
-        // setActiveStep((step) => step + 1)
+        setActiveStep((step) => step + 1)
     }
 
     return (
