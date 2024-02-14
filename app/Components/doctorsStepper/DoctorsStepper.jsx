@@ -4,19 +4,18 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-import StepOne from './doctorSteperComponents/StepOne';
 import StepTwo from './doctorSteperComponents/StepTwo';
-import StepTree from './doctorSteperComponents/StepTree';
 import StepFour from './doctorSteperComponents/StepFour';
+import StepTreeUpdated from './doctorSteperComponents/StepTreeUpdated';
+import StepCongratulations from './doctorSteperComponents/StepCongratulations';
+import StepOne from './doctorSteperComponents/StepOne';
 
 const StepLabels = [
-    { label: "Details" },
-    { label: "Education" },
-    { label: "Experiance" },
-    { label: "Languages" }
+    { label: "Detales" },
+    { label: "Išsilavinimas" },
+    { label: "Darbovietė" },
+    { label: "Kalbos" }
 ]
 
 const DoctorsStepper = () => {
@@ -34,7 +33,7 @@ const DoctorsStepper = () => {
     }
     return (
         <>
-            <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "auto", marginTop:"2rem"}}>
+            <Box  sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "auto", marginTop:"2rem", padding: "5px" }}>
                 <Box >
                     <Stepper activeStep={ActiveStep} alternativeLabel>
                         {StepLabels.map((item, index) => {
@@ -46,11 +45,12 @@ const DoctorsStepper = () => {
                         })}
                     </Stepper>
 
-                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "25rem" }}>
+                    <Box  sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: {sm: "25rem", xs: "20rem"}}}>
                         {ActiveStep === 0 && <StepOne ActiveStep={ActiveStep} setActiveStep={setActiveStep} />}
                         {ActiveStep === 1 && <StepTwo ActiveStep={ActiveStep} setActiveStep={setActiveStep} />}
-                        {ActiveStep === 2 && <StepTree ActiveStep={ActiveStep} setActiveStep={setActiveStep} />}
+                        {ActiveStep === 2 && <StepTreeUpdated ActiveStep={ActiveStep} setActiveStep={setActiveStep} />}
                         {ActiveStep === 3 && <StepFour ActiveStep={ActiveStep} setActiveStep={setActiveStep} />}
+                        {ActiveStep === 4 && <StepCongratulations />}
                     </Box>
                 </Box>
             </Box>

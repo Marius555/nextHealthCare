@@ -36,7 +36,7 @@ const RegisterCompanyAction = async(values) => {
     
     if(is_valid === true){
         const check = await verify(values)
-        {check === true && redirect("/")}
+        {check === true && redirect("/login_user")}
     }
     else{
         return {"msg": "Shape Of Form Miss Match"}

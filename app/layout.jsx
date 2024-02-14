@@ -1,8 +1,9 @@
 
-import ThemeRegistry from './ThemeRegistry'
 import NavBar from './Components/NavBar';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-
+import { ThemeProvider } from '@mui/material/styles';
+import theme from './theme';
+import React from 'react';
 
 export const metadata = {
   title: 'Create Next App',
@@ -11,14 +12,18 @@ export const metadata = {
 
 export default function RootLayout(props) {
   const { children } = props;
-  
+
   return (
     <html lang="en">
       <body>
         <AppRouterCacheProvider>
-          <NavBar />
-          {children}
-          </AppRouterCacheProvider>
+          <ThemeProvider theme={theme}>
+            <div>
+              <NavBar />
+              {children}
+            </div>
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

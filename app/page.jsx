@@ -1,10 +1,9 @@
-import NavBar from "./Components/NavBar"
-
+import DoctorMainPageCard from "./Components/MainPage/DoctorMainPageCards"
 export default function Home() {
   
   return (
     <main>
-      <h1>hey</h1>
+      <DoctorMainPageCard />
     </main>
   )
 }

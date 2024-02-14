@@ -17,14 +17,16 @@ import StepFourDoctorAction from '../../../serveractions/DoctorProfilerAction/St
 
 const StepFour = ({ ActiveStep, setActiveStep }) => {
 
-
+    const defaultValues = {
+        LithuanianLanguage: "", CanConsultLithuanian: "", EnglishLanguage: "", CanConsultEnglish: "", RussianLanguage: "", CanConsultRussian: ""
+    }
     const {
         register,
         handleSubmit,
         control,
 
         formState: { errors },
-    } = useForm({resolver: yupResolver(DoctorStepFourResolver)})
+    } = useForm({resolver: yupResolver(DoctorStepFourResolver), defaultValues: defaultValues})
 
     const [hover, setHover] = React.useState(-1);
     const [hoverB, setHoverB] = React.useState(-1);
@@ -48,10 +50,9 @@ const StepFour = ({ ActiveStep, setActiveStep }) => {
         return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
     }
 
-    const incrementStep = (values) => {
-        StepFourDoctorAction(values)
-        // console.log(values)
-        // setActiveStep((step) => step + 1)
+    const incrementStep = async(values) => {
+        await StepFourDoctorAction(values)
+        setActiveStep((step) => step + 1)
     }
 
     return (

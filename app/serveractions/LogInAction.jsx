@@ -2,7 +2,6 @@
 import LogInResolverSchema from "../resolver/UserLogInResolver"
 import { redirect } from "next/navigation"
 import { cookies } from 'next/headers'
-
 import PocketBase from 'pocketbase';
 const pb = new PocketBase('http://127.0.0.1:8090');
 
@@ -33,12 +32,18 @@ const LogInAction = async (values) => {
 
     if (is_valid === true) {
         const check = await verify(values)
-        { check === true && redirect("/") }
+        if(check === true ){
+            redirect("/")
+            
+        }
+        else{
+            return {error: check}
+        }
     }
     else {
-        return { "msg": "Shape Of Form Miss Match" }
+        return { error: "Shape Of Form Miss Match" }
     }
-
+    
 
 }
 

@@ -3,9 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import TextField from '@mui/material/TextField';
 import { useForm, Controller } from "react-hook-form"
-import DoctorStepOneResolver from '../../../resolver/doctorProfilerResolvers/stepOneResolver';
 import { yupResolver } from "@hookform/resolvers/yup"
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -13,12 +11,12 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import DoctorStepTwoResolver from '../../../resolver/doctorProfilerResolvers/stepTwoResolver';
 import FormHelperText from '@mui/material/FormHelperText';
 import dayjs from 'dayjs';
 import StepTwoDoctorAction from '../../../serveractions/DoctorProfilerAction/StepTwoDoctorAction';
-
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { TextField } from '@mui/material';
 
 
 import "dayjs/locale/lt"
@@ -157,6 +155,9 @@ const DegreeLevels = [
 
 const StepTwo = ({ ActiveStep, setActiveStep }) => {
 
+    const defaultValues = {
+        HighSchool: "", StudyBeginningDate: "", DateOfGraduation: "", Specialization: "", DegreeLevel: "", LicenseNumber: ""
+    }
 
     const {
         register,
@@ -164,7 +165,7 @@ const StepTwo = ({ ActiveStep, setActiveStep }) => {
         control,
 
         formState: { errors },
-    } = useForm({ resolver: yupResolver(DoctorStepTwoResolver) })
+    } = useForm({ resolver: yupResolver(DoctorStepTwoResolver), defaultValues: defaultValues})
 
     const incrementStep = (values) => {
         StepTwoDoctorAction(values)
@@ -211,6 +212,48 @@ const StepTwo = ({ ActiveStep, setActiveStep }) => {
 
                         />
                     </Grid>
+                    <Grid xs={6} sm={6}>
+                        <Controller
+                            control={control}
+                            name='StudyBeginningDate'
+                            required
+                            render={({ field: { onChange, onBlur } }) => (
+                                <>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='lt' >
+                                        <DesktopDatePicker label="Studiju Pradžia" onChange={onChange}
+                                            onBlur={onBlur} sx={{ width: "100%" }} disableFuture required
+                                            slotProps={{ textField: { size: 'small', error: Boolean(errors.StudyBeginningDate) } }}
+                                            openTo="year"
+                                            views={['year', 'month']}
+                                        />
+                                    </LocalizationProvider>
+
+                                </>
+                            )}
+                        />
+                        <FormHelperText error variant='filled'>{errors.StudyBeginningDate?.message}</FormHelperText>
+                    </Grid>
+                    <Grid xs={6} sm={6}>
+                        <Controller
+                            control={control}
+                            name='DateOfGraduation'
+                            required
+                            render={({ field: { onChange, onBlur } }) => (
+                                <>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='lt' >
+                                        <DesktopDatePicker label="Studiju Pabaiga" onChange={onChange}
+                                            onBlur={onBlur} sx={{ width: "100%" }} disableFuture required
+                                            slotProps={{ textField: { size: 'small', error: Boolean(errors.DateOfGraduation) } }}
+                                            openTo="year"
+                                            views={['year', 'month']}
+                                        />
+                                    </LocalizationProvider>
+
+                                </>
+                            )}
+                        />
+                        <FormHelperText error variant='filled'>{errors.DateOfGraduation?.message}</FormHelperText>
+                    </Grid>
                     <Grid xs={12} >
                         <Controller
                             control={control}
@@ -246,49 +289,8 @@ const StepTwo = ({ ActiveStep, setActiveStep }) => {
 
                         />
                     </Grid>
-                    <Grid xs={12} sm={6}>
-                        <Controller
-                            control={control}
-                            name='StudyBeginningDate'
-                            required
-                            render={({ field: { onChange, onBlur } }) => (
-                                <>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='lt' >
-                                        <DatePicker label="Studiju Pradžia" onChange={onChange}
-                                            onBlur={onBlur} sx={{ width: "100%" }} disableFuture required
-                                            slotProps={{ textField: { size: 'small', error: Boolean(errors.StudyBeginningDate) } }}
-                                            openTo="year"
-                                            views={['year', 'month']}
-                                        />
-                                    </LocalizationProvider>
-
-                                </>
-                            )}
-                        />
-                        <FormHelperText error variant='filled'>{errors.StudyBeginningDate?.message}</FormHelperText>
-                    </Grid>
-                    <Grid xs={12} sm={6}>
-                        <Controller
-                            control={control}
-                            name='DateOfGraduation'
-                            required
-                            render={({ field: { onChange, onBlur } }) => (
-                                <>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='lt' >
-                                        <DatePicker label="Studiju Pabaiga" onChange={onChange}
-                                            onBlur={onBlur} sx={{ width: "100%" }} disableFuture required
-                                            slotProps={{ textField: { size: 'small', error: Boolean(errors.DateOfGraduation) } }}
-                                            openTo="year"
-                                            views={['year', 'month']}
-                                        />
-                                    </LocalizationProvider>
-
-                                </>
-                            )}
-                        />
-                        <FormHelperText error variant='filled'>{errors.DateOfGraduation?.message}</FormHelperText>
-                    </Grid>
-                    <Grid xs={12} >
+                    
+                    <Grid xs={6} sm={6} >
                         <Controller
                             control={control}
                             name='DegreeLevel'
@@ -321,6 +323,17 @@ const StepTwo = ({ ActiveStep, setActiveStep }) => {
                                 </>
                             )}
 
+                        />
+                    </Grid>
+                    <Grid xs={6} sm={6}>
+                        <TextField
+                            size='small'
+                            required
+                            fullWidth
+                            label="Licenzijos Numeris"
+                            {...register("LicenseNumber")}
+                            autoComplete="License Number"
+                            error={Boolean(errors.LicenseNumber)} helperText={errors.LicenseNumber?.message}
                         />
                     </Grid>
 

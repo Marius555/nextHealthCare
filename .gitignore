@@ -16,6 +16,11 @@
 # production
 /build
 
+/pocketbase/pb_data/logs.db
+pocketbase/pb_data/logs.db
+
+*Db.*
+
 # misc
 .DS_Store
 *.pem

@@ -17,6 +17,7 @@ import NavBarOnScroll from './navbar/NavBarOnScroll';
 import NavBarDrawer from './navbar/NavBarDrawer';
 import MenuIcon from '@mui/icons-material/Menu';
 
+
 const pb = new PocketBase('http://127.0.0.1:8090');
 
 export default async function NavBar() {

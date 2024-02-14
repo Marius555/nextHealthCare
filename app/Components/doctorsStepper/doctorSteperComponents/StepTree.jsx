@@ -7,22 +7,12 @@ import TextField from '@mui/material/TextField';
 import { useForm, Controller } from "react-hook-form"
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import "dayjs/locale/lt"
-import DoctorStepOneResolver from '../../../resolver/doctorProfilerResolvers/stepOneResolver';
 import { yupResolver } from "@hookform/resolvers/yup"
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormLabel from '@mui/material/FormLabel';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
-import StepOneDoctorAction from '../../../serveractions/DoctorProfilerAction/StepOneDoctorAction';
 import DoctorStepTreeResolver from '../../../resolver/doctorProfilerResolvers/stepTreeResolver';
 import StepTreeDoctorAction from '../../../serveractions/DoctorProfilerAction/StepTreeDoctorAction';
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
 
 const StepTree = ({ ActiveStep, setActiveStep }) => {
@@ -81,7 +71,7 @@ const StepTree = ({ ActiveStep, setActiveStep }) => {
                             error={Boolean(errors.CompanyURL)} helperText={errors.CompanyURL?.message}
                         />
                     </Grid>
-                    <Grid xs={12} sm={6}>
+                    <Grid xs={6} sm={6}>
                         <Controller
                             control={control}
                             name='Nuo'
@@ -89,7 +79,7 @@ const StepTree = ({ ActiveStep, setActiveStep }) => {
                             render={({ field: { onChange, onBlur } }) => (
                                 <>
                                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='lt' >
-                                        <DatePicker label="Nuo" onChange={onChange}
+                                        <DesktopDatePicker label="Nuo" onChange={onChange}
                                             onBlur={onBlur} sx={{ width: "100%" }} disableFuture required
                                             slotProps={{ textField: { size: 'small', error: Boolean(errors.Nuo) } }}
                                             views={['year', 'month']}
@@ -102,7 +92,7 @@ const StepTree = ({ ActiveStep, setActiveStep }) => {
                         />
                         <FormHelperText error variant='filled'>{errors.Nuo?.message}</FormHelperText>
                     </Grid>
-                    <Grid xs={12} sm={6}>
+                    <Grid xs={6} sm={6}>
                         <Controller
                             control={control}
                             name='Iki'
@@ -110,7 +100,7 @@ const StepTree = ({ ActiveStep, setActiveStep }) => {
                             render={({ field: { onChange, onBlur } }) => (
                                 <>
                                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='lt' >
-                                        <DatePicker label="Iki" onChange={onChange}
+                                        <DesktopDatePicker label="Iki" onChange={onChange}
                                             onBlur={onBlur} sx={{ width: "100%" }} disableFuture required
                                             slotProps={{ textField: { size: 'small', error: Boolean(errors.Iki) } }}
                                             views={['year', 'month']}

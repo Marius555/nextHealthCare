@@ -16,6 +16,7 @@ const StepTwoDoctorAction = async(values) => {
                 "Specialization": values.Specialization,
                 "StudyBeginningDate": dayjs(values.StudyBeginningDate).format("YYYY-MM-DD"),
                 "DateOfGraduation": dayjs(values.DateOfGraduation).format("YYYY-MM-DD"),
+                "LicenseNumber": values.LicenseNumber
             };
             await pb.collection('DoctorEducation').create(data);
         } catch (error) {

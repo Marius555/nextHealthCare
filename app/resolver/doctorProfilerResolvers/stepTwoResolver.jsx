@@ -7,6 +7,7 @@ const DoctorStepTwoResolver = yup
     HighSchool: yup.string().required("Aukštoji Mokyklą Nurodyti Būtina"),
     Specialization: yup.string().required("Specializacija nurodyti Būtina"),
     DegreeLevel: yup.string().required("Specializacija nurodyti Būtina"),
+    LicenseNumber: yup.string().required("Imones Kontaktinio Asmens Vardas Butina"),
     DateOfGraduation: yup.date().transform(function (value, originalValue) {
       if (this.isType(value)) {
         return value;

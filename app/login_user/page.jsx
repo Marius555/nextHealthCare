@@ -17,6 +17,8 @@ import LogInAction from '../serveractions/LogInAction';
 import getCookie from '../Components/GetCookie';
 import PocketBase from 'pocketbase';
 import { useRouter } from 'next/navigation';
+import FormHelperText from '@mui/material/FormHelperText';
+import { useState } from 'react';
 
 
 const pb = new PocketBase('http://127.0.0.1:8090');
@@ -42,8 +44,17 @@ function Copyright(props) {
 export default function SignInSide() {
     const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(LogInResolverSchema) })
     const router = useRouter()
+    const [err, setErr] = useState(null)
+
     const Submit = async (values) => {
-        await LogInAction(values)
+        const response = await LogInAction(values)
+        if(response?.error){
+            const msg = JSON.parse(response?.error)
+            const msgData = msg.response.message
+            setErr(msgData)
+            
+        }
+    
         
         try {
             const trying = getCookie('pb_auth')
@@ -52,16 +63,17 @@ export default function SignInSide() {
             if(await pb.authStore.model.VartotojoTipas === "Doctor" && await pb.authStore.model.FirstLogin === false){
                 router.push("/user/doctor/profiler")
                 const record = await pb.collection('User').update(decode.model.id, {FirstLogin: true});
-                console.log(record)
+                
             }
+            
         }
         catch {
             return 
         }
+        
     }
     return (
         <>
-          
             <Grid container component="main" sx={{ height: 'calc(100vh - 64px)' }}>
                 <CssBaseline />
                 <Grid
@@ -116,6 +128,7 @@ export default function SignInSide() {
                                 autoComplete="current-password"
                                 error={Boolean(errors.password)} helperText={errors.password?.message}
                             />
+                            <FormHelperText error>{err}</FormHelperText>
 
                             <Button
                                 type="submit"
